@@ -21,7 +21,7 @@ on:
         description: 'golang-fips/go ref'
         required: true
         default: 'main'
-      go_ref:
+      upstream_go_ref:
         description: 'golang/go ref'
         required: true
         default: 'release-branch.go1.19'
@@ -42,7 +42,7 @@ on:
         required: true
         default: 'main'
         type: string
-      go_ref:
+      upstream_go_ref:
         description: 'golang/go ref'
         required: true
         default: 'release-branch.go1.19'
@@ -65,13 +65,22 @@ permissions:
   statuses: none
 
 jobs:
+  # Print configuration
+  print-config:
+    name: "Print test configuration"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Print configuration"
+        shell: bash
+        run: printf '${{ toJSON(inputs) }}'
+
   # Look up the images for each selected compose
   select-composes:
     name: "Select Compose Images"
+    needs: print-config
     uses: ./.github/workflows/select-composes.yml
     with:
       composes: ${{ inputs.composes }}
-
 
   test:
     name: "Build and Test Go (FIPS)"
@@ -135,7 +144,7 @@ jobs:
           pushd go
           # lower the go build version to 1.16
           sed -i "s/go mod tidy/go mod tidy -go=1.16/g" scripts/create-secondary-patch.sh
-          ./scripts/setup-initial-patch.sh -r $(realpath ../openssl-fips) ${{ inputs.go_ref }}
+          ./scripts/setup-initial-patch.sh -r $(realpath ../openssl-fips) ${{ inputs.upstream_go_ref }}
 
       - name: "Apply FIPS patches"
         shell: bash
