@@ -99,13 +99,9 @@ jobs:
           git config --global user.email "<>"
 
       - name: "Clone golang-fips/go"
-        shell: bash
-        run: | 
-          cd $GITHUB_WORKSPACE/..
-          git clone https://github.com/golang-fips/go
-          cd go
-          git fetch origin ${{ inputs.go_fips_ref }}:000_github_actions_test
-          git checkout 000_github_actions_test
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ inputs.go_fips_ref }}"
 
       - name: "Setup initial fips patches"
         shell: bash
@@ -114,6 +110,9 @@ jobs:
           pwd
           ls -Al *
           pushd go
+          # script requires a git repo
+          git init
+          git config --global --add safe.directory /__w/go/go
           # lower the go build version to 1.16
           sed -i "s/go mod tidy/go mod tidy -go=1.16/g" scripts/create-secondary-patch.sh
           ./scripts/full-initialize-repo.sh
