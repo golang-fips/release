@@ -150,6 +150,14 @@ jobs:
             git commit -am $patch
           done
 
+      - name: "Configure FIPS tests"
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/..
+          pwd
+          pushd go
+          ./scripts/configure-crypto-tests.sh
+
       - name: "Build Go"
         shell: bash
         run: |
