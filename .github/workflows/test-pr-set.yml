@@ -126,18 +126,6 @@ jobs:
           git fetch origin ${{ inputs.go_fips_ref }}:000_github_actions_test
           git checkout 000_github_actions_test
 
-      - name: "Setup initial fips patches"
-        shell: bash
-        run: |
-          cd $GITHUB_WORKSPACE/..
-          pwd
-          ls -Al *
-          pushd go
-          git config --global --add safe.directory /__w/go/go
-          # lower the go build version to 1.16
-          sed -i "s/go mod tidy/go mod tidy -go=1.16/g" scripts/create-secondary-patch.sh
-          ./scripts/setup-initial-patch.sh -r $(realpath ../openssl-fips) ${{ inputs.go_ref }}
-
       - name: "Apply FIPS patches"
         shell: bash
         run: |
