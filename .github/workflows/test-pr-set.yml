@@ -158,6 +158,16 @@ jobs:
           pushd go
           ./scripts/configure-crypto-tests.sh
 
+      - name: "Run boringcheck"
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/..
+          pwd
+          git clone https://github.com/derekparker/boringcheck.git
+          pushd go
+          go run ../boringcheck/cmd/boringcheck/main.go go/src/crypto > boringcheck.txt
+          diff scripts/exceptions.txt boringcheck.txt
+
       - name: "Build Go"
         shell: bash
         run: |
