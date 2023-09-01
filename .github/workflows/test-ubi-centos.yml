@@ -88,6 +88,10 @@ jobs:
         shell: bash
         run: go version
 
+      - name: "Print Go env"
+        shell: bash
+        run: go env
+
       - name: "Print OpenSSL version"
         shell: bash
         run: openssl version
