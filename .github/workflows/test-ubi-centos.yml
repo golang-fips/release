@@ -120,6 +120,8 @@ jobs:
           # lower the go build version to 1.16
           sed -i "s/go mod tidy/go mod tidy -go=1.16/g" scripts/create-secondary-patch.sh
           ./scripts/full-initialize-repo.sh
+          # raise the go module version back to what is expected to prevent the toolchain from emulating older versions.
+          go mod edit -go="$(./go/bin/go version | awk '{ print $3 }' | sed 's/go//' | awk -F. '{printf "%s.%s\n", $1, $2}')" ./go/src/go.mod
 
       - name: "Configure FIPS tests"
         shell: bash
