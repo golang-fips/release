@@ -117,8 +117,6 @@ jobs:
           # script requires a git repo
           git init
           git config --global --add safe.directory /__w/go/go
-          # lower the go build version to 1.16
-          sed -i "s/go mod tidy/go mod tidy -go=1.16/g" scripts/create-secondary-patch.sh
           ./scripts/full-initialize-repo.sh
 
       - name: "Configure FIPS tests"
