@@ -167,5 +167,9 @@ jobs:
           cd $GITHUB_WORKSPACE/..
           pwd
           ls -Al *
-          ./go/scripts/crypto-test.sh
+          if 2>/dev/null cat go/.gitmodules | grep -q "url = https://github.com/golang/go.git"; then
+            ./go/scripts/crypto-test.sh
+          else
+            ./go/go/scripts/crypto-test.sh
+          fi
 
