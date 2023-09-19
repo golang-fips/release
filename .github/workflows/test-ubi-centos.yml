@@ -128,6 +128,7 @@ jobs:
             # build script requires a git repo
             git init
             git config --global --add safe.directory /__w/go/go
+            git config --global --add safe.directory /__w/go/go/go
           fi
 
       - name: "Configure FIPS tests"
