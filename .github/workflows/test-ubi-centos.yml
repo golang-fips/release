@@ -113,11 +113,18 @@ jobs:
           cd $GITHUB_WORKSPACE/..
           pwd
           ls -Al *
-          pushd go
-          # script requires a git repo
-          git init
-          git config --global --add safe.directory /__w/go/go
-          ./scripts/full-initialize-repo.sh
+          if 2>/dev/null cat go/.gitmodules | grep -q "url = https://github.com/golang/go.git"; then
+            pushd go
+            # script requires a git repo
+            git init
+            git config --global --add safe.directory /__w/go/go
+            ./scripts/full-initialize-repo.sh
+          else
+            # set up the directory tree like go*-fips-release
+            mkdir go-top
+            mv go go-top
+            mv go-top go
+          fi
 
       - name: "Configure FIPS tests"
         shell: bash
@@ -125,7 +132,9 @@ jobs:
           cd $GITHUB_WORKSPACE/..
           pwd
           pushd go
-          ./scripts/configure-crypto-tests.sh
+          if [[ -f ./scripts/configure-crypto-tests.sh ]]; then
+            ./scripts/configure-crypto-tests.sh
+          fi
 
       - name: "Build Go"
         shell: bash
@@ -153,28 +162,5 @@ jobs:
           cd $GITHUB_WORKSPACE/..
           pwd
           ls -Al *
+          ./go/scripts/crypto-test.sh
 
-          pushd go/go
-          export GO=$(pwd)/bin/go
-          export GOCACHE=/tmp/go-cache
-          export GOLANG_FIPS=1
-          export OPENSSL_FORCE_FIPS_MODE=1
-
-          pushd src
-          
-          pushd crypto
-          echo "Running crypto tests in FIPS mode"
-          $GO test -count=1 $($GO list ./... | grep -v tls) -v
-          echo "Checking signature function parity"
-          CGO_ENABLED=0 $GO test -count=1 $($GO list ./... | grep -v tls) -v
-          popd
-
-          pushd vendor/github.com/golang-fips
-          echo "Running golang-fips tests in FIPS mode"
-          $GO test -count=1 $($GO list ./... | grep -v tls) -v
-          popd
-
-          pushd crypto/tls
-          echo "Running TLS tests in FIPS mode"
-          $GO test -count=1 $($GO list ./...) -run "^TestBoring"
-          popd
