@@ -115,7 +115,7 @@ jobs:
           ls -Al *
           if 2>/dev/null cat go/.gitmodules | grep -q "url = https://github.com/golang/go.git"; then
             pushd go
-            # script requires a git repo
+            # init script requires a git repo
             git init
             git config --global --add safe.directory /__w/go/go
             ./scripts/full-initialize-repo.sh
@@ -124,6 +124,10 @@ jobs:
             mkdir go-top
             mv go go-top
             mv go-top go
+            pushd go/go
+            # build script requires a git repo
+            git init
+            git config --global --add safe.directory /__w/go/go
           fi
 
       - name: "Configure FIPS tests"
