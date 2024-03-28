@@ -10,42 +10,42 @@ on:
   workflow_dispatch:
     inputs:
       composes:
-        description: 'compose names'
+        description: "compose names"
         required: true
-        default: 'ubi8,ubi9,c8s,c9s'
+        default: "ubi8,ubi9,c8s,c9s"
       go_openssl_ref:
-        description: 'golang-fips/openssl-fips ref'
+        description: "golang-fips/openssl-fips ref"
         required: true
-        default: 'master'
+        default: "master"
       go_fips_ref:
-        description: 'golang-fips/go ref'
+        description: "golang-fips/go ref"
         required: true
-        default: 'main'
+        default: "main"
       go_ref:
-        description: 'golang/go ref'
+        description: "golang/go ref"
         required: true
-        default: 'release-branch.go1.19'
+        default: "release-branch.go1.19"
   workflow_call:
     inputs:
       composes:
-        description: 'compose names'
+        description: "compose names"
         required: true
-        default: 'ubi8,ubi9,c8s,c9s'
+        default: "ubi8,ubi9,c8s,c9s"
         type: string
       go_openssl_ref:
-        description: 'golang-fips/go-openssl ref'
+        description: "golang-fips/go-openssl ref"
         required: true
-        default: 'master'
+        default: "master"
         type: string
       go_fips_ref:
-        description: 'golang-fips/go ref'
+        description: "golang-fips/go ref"
         required: true
-        default: 'main'
+        default: "main"
         type: string
       go_ref:
-        description: 'golang/go ref'
+        description: "golang/go ref"
         required: true
-        default: 'release-branch.go1.19'
+        default: "release-branch.go1.19"
         type: string
 
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
@@ -72,7 +72,6 @@ jobs:
     with:
       composes: ${{ inputs.composes }}
 
-
   test:
     name: "Build and Test Go (FIPS)"
     runs-on: ubuntu-latest
@@ -87,7 +86,14 @@ jobs:
     steps:
       - name: "Install dependencies"
         shell: bash
-        run: yum install git golang golang-bin openssl openssl-devel -y
+        run: |
+          yum install -y  \
+            git           \
+            golang        \
+            golang-bin    \
+            openssl       \
+            openssl-devel \
+            glibc_static
 
       - name: "Print OS version"
         shell: bash
@@ -103,7 +109,7 @@ jobs:
 
       - name: "Configure golang-fips ci git user"
         shell: bash
-        run: | 
+        run: |
           git config --global user.name "golang-fips ci"
           git config --global user.email "<>"
 
@@ -119,7 +125,7 @@ jobs:
 
       - name: "Clone golang-fips/go"
         shell: bash
-        run: | 
+        run: |
           cd $GITHUB_WORKSPACE/..
           git clone https://github.com/golang-fips/go
           cd go
