@@ -93,6 +93,9 @@ jobs:
             golang-bin    \
             openssl       \
             openssl-devel \
+            # Buildroots contain glibc_static, so include the package here
+            # as well to root out any issues early. This is not a supported
+            # configuration, but it's better to catch these failures early.
             glibc_static
 
       - name: "Print OS version"
