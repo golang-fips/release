@@ -146,6 +146,13 @@ jobs:
           # lower the go build version to 1.16
           sed -i "s/go mod tidy/go mod tidy -go=1.16/g" scripts/create-secondary-patch.sh
           ./scripts/setup-initial-patch.sh -r $(realpath ../openssl-fips) ${{ inputs.go_ref }}
+          git diff --exit-code patches/ >/dev/null 2>&1
+          if [ $? -ne 0 ]; then
+            # if there is a diff in patches the author of this PR likely forgot to generate
+            # and commit new patch files.
+            echo "Uncommited patch modifications detected, please generate all patch files and commit them."
+            exit 1
+          fi
 
       - name: "Apply FIPS patches"
         shell: bash
