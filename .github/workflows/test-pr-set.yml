@@ -12,7 +12,7 @@ on:
       composes:
         description: "compose names"
         required: true
-        default: "ubi8,ubi9,c8s,c9s"
+        default: "ubi8,ubi9,ubi10,c9s,c10s"
       go_openssl_ref:
         description: "golang-fips/openssl-fips ref"
         required: true
@@ -30,7 +30,7 @@ on:
       composes:
         description: "compose names"
         required: true
-        default: "ubi8,ubi9,c8s,c9s"
+        default: "ubi8,ubi9,ubi10,c9s,c10s"
         type: string
       go_openssl_ref:
         description: "golang-fips/go-openssl ref"

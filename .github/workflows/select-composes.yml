@@ -10,7 +10,7 @@ on:
       composes:
         description: 'compose names'
         required: true
-        default: 'ubi7,ubi8,ubi9,c8s,c9s'
+        default: 'ubi8,ubi9,ubi10,c9s,c10s'
         type: string
     outputs:
       composes:
@@ -56,8 +56,10 @@ jobs:
               'ubi7': 'registry.access.redhat.com/ubi7/go-toolset:latest',
               'ubi8': 'registry.access.redhat.com/ubi8/go-toolset:latest',
               'ubi9': 'registry.access.redhat.com/ubi9/go-toolset:latest',
+              'ubi10': 'registry.access.redhat.com/ubi10/go-toolset:latest',
               'c8s': 'quay.io/centos/centos:stream8',
               'c9s': 'quay.io/centos/centos:stream9',
+              'c10s': 'quay.io/centos/centos:stream10',
           }
           inputs = re.split(r"\s*,\s*|\s+", os.environ["COMPOSES"].strip())
           if inputs:
